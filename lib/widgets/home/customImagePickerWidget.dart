@@ -1,8 +1,7 @@
-// custom_image_picker_widget.dart
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cvdou/services/visionService.dart';
 
 class CustomImagePickerWidget extends StatefulWidget {
   @override
@@ -12,6 +11,7 @@ class CustomImagePickerWidget extends StatefulWidget {
 class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
+  final VisionService _visionService = VisionService();
 
   // Fonction pour ouvrir la caméra
   Future<void> _pickImageFromCamera() async {
@@ -31,6 +31,11 @@ class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
         _image = File(pickedFile.path);
       });
     }
+  }
+
+  Future<void> _analyzeImage() async {
+    final analysis = await _visionService.analyzeImage(_image!);
+    print(analysis);
   }
 
   Column unselectedImage() {
@@ -66,7 +71,7 @@ class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
         ),
         SizedBox(height: 30),
         ElevatedButton(
-          onPressed: () => {},
+          onPressed: _analyzeImage,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.lightBlue.shade600,
           ),
