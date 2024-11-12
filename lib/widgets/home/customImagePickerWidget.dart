@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -36,6 +38,8 @@ class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
   Future<void> _analyzeImage() async {
     final analysis = await _visionService.analyzeImage(_image!);
     print(analysis);
+    List<String> urlImages = await _visionService.extractUrlImages(analysis!);
+    print(urlImages);
   }
 
   Column unselectedImage() {
