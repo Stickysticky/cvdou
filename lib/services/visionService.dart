@@ -2,19 +2,17 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class VisionService {
   final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
 
-  // Méthode pour analyser une image avec des types de détection par défaut
-  Future<Map<String, dynamic>?> analyzeImage(File imageFile) async {
+  Future<Map<String, dynamic>?> searchImage(File imageFile) async {
     final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
 
-    // Convertir l'image en Base64
     final bytes = await imageFile.readAsBytes();
     final base64Image = base64Encode(bytes);
 
-    // Construire la requête JSON avec les features par défaut
     final requestBody = jsonEncode({
       "requests": [
         {
@@ -22,11 +20,11 @@ class VisionService {
             "content": base64Image,
           },
           "features": [
-            { "type": "LABEL_DETECTION", "maxResults": 5 },
-            { "type": "WEB_DETECTION", "maxResults": 5 },
-            { "type": "LANDMARK_DETECTION", "maxResults": 1 },
+            { "type": "LABEL_DETECTION", "maxResults": 10 },
+            { "type": "WEB_DETECTION", "maxResults": 100 },
+            { "type": "LANDMARK_DETECTION", "maxResults": 100 },
             { "type": "OBJECT_LOCALIZATION" },
-            { "type": "LOGO_DETECTION", "maxResults": 5 }
+            { "type": "LOGO_DETECTION", "maxResults": 100 }
           ],
           "imageContext": {
             "languageHints": ["fr"],
@@ -111,6 +109,13 @@ class VisionService {
 
     // Éliminer les doublons et retourner la liste des mots-clés
     return urlImages.toSet().toList();
+  }
+
+  Future<List<String>> analyzeImage(File image) async {
+    final analysis = await searchImage(image);
+    List<String> urlImages = await extractUrlImages(analysis!);
+    print(urlImages);
+    return urlImages;
   }
 
 }

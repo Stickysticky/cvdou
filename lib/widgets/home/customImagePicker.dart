@@ -1,19 +1,31 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cvdou/services/visionService.dart';
+import 'package:cvdou/widgets/home/searchBtn.dart';
+import 'package:cvdou/widgets/home/imageGrid.dart';
 
-class CustomImagePickerWidget extends StatefulWidget {
+class CustomImagePicker extends StatefulWidget {
+  final List<String> urlImages;
+
+  CustomImagePicker({Key? key, required this.urlImages}) : super(key: key);
+
   @override
-  _CustomImagePickerWidgetState createState() => _CustomImagePickerWidgetState();
+  _CustomImagePickerState createState() =>
+      _CustomImagePickerState();
 }
 
-class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
+class _CustomImagePickerState extends State<CustomImagePicker> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
   final VisionService _visionService = VisionService();
+  late List<String> _urlImages;
+
+  @override
+  void initState() {
+    super.initState();
+    _urlImages = widget.urlImages;
+  }
 
   // Fonction pour ouvrir la caméra
   Future<void> _pickImageFromCamera() async {
@@ -33,13 +45,6 @@ class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
         _image = File(pickedFile.path);
       });
     }
-  }
-
-  Future<void> _analyzeImage() async {
-    final analysis = await _visionService.analyzeImage(_image!);
-    print(analysis);
-    List<String> urlImages = await _visionService.extractUrlImages(analysis!);
-    print(urlImages);
   }
 
   Column unselectedImage() {
@@ -74,18 +79,16 @@ class _CustomImagePickerWidgetState extends State<CustomImagePickerWidget> {
           child: Text("Choisir depuis la galerie"),
         ),
         SizedBox(height: 30),
-        ElevatedButton(
-          onPressed: _analyzeImage,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.lightBlue.shade600,
-          ),
-          child: Text(
-            "Rechercher",
-            style: TextStyle(
-              color: Colors.white
-            ),
-          ),
+        SearchBtn(
+          onPressed: () async {
+            List<String> urlImages = await _visionService.analyzeImage(_image!);
+            setState(() {
+              _urlImages = urlImages;
+            });
+          },
         ),
+        SizedBox(height: 20),
+        _urlImages.isNotEmpty ? ImageGridWidget(imageUrls: _urlImages) : Container(),
       ],
     );
   }
