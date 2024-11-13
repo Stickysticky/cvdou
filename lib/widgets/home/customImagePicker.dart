@@ -22,6 +22,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   final VisionService _visionService = VisionService();
   late List<String> _urlImages;
   final GoogleSearchService _googleSearchService = GoogleSearchService();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        SizedBox(height: 20),
+        SizedBox(height: 70),
         ElevatedButton(
           onPressed: _pickImageFromCamera,
           child: Text("Prendre une photo"),
@@ -83,16 +84,32 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 30),
         SearchBtn(
           onPressed: () async {
-            final analysis = await _visionService.analyseImage(_image!);
-            List<String> urlImages = await _googleSearchService.searchRelatedImages(analysis!);
-            print(urlImages);
             setState(() {
-              _urlImages = urlImages;
+              _urlImages.clear();
+              _isLoading = true;
             });
+
+            try {
+              final analysis = await _visionService.analyseImage(_image!);
+              List<String> urlImages = await _googleSearchService.searchRelatedImages(analysis!);
+              setState(() {
+                _urlImages = urlImages; // Mettre à jour les URL d'images
+              });
+            } catch (e) {
+              print('Erreur : $e');
+            } finally {
+              setState(() {
+                _isLoading = false;
+              });
+            }
           },
         ),
         SizedBox(height: 20),
-        _urlImages.isNotEmpty ? ImageGridWidget(imageUrls: _urlImages) : Container(),
+        _isLoading
+            ? CircularProgressIndicator()
+            : _urlImages.isNotEmpty
+            ? ImageGridWidget(imageUrls: _urlImages)
+            : Container(),
       ],
     );
   }
