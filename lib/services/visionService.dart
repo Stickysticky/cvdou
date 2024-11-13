@@ -45,7 +45,10 @@ class VisionService {
             "content": base64Image,
           },
           "features": [
-            { "type": "LABEL_DETECTION", "maxResults": 5 },
+            { "type": "LABEL_DETECTION", "maxResults": 10 },
+            { "type": "WEB_DETECTION", "maxResults": 5 },
+            { "type": "LANDMARK_DETECTION", "maxResults": 10 },
+            { "type": "LOGO_DETECTION", "maxResults": 10 }
           ]
         }
       ]

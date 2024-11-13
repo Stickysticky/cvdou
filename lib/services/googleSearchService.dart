@@ -7,32 +7,61 @@ class GoogleSearchService {
 
   Future<List<String>> searchRelatedImages(Map<String, dynamic> searchResult) async {
     List<String> keywords = _extractKeywords(searchResult);
-
     final query = keywords.join(" ");
-    final searchUrl = Uri.parse('https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey');
+    final numResults = 10;
 
-    try {
-      final response = await http.get(searchUrl);
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return _extractImageUrls(data);
-      } else {
-        print('Erreur : ${response.statusCode}');
-        return [];
+    List<String> allImageUrls = [];
+
+    int startIndex = 1;
+
+    for (int i = 0; i < 3; i++) {
+      final searchUrl = Uri.parse(
+          'https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
+      );
+
+      try {
+        final response = await http.get(searchUrl);
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          allImageUrls.addAll(_extractImageUrls(data));
+
+          startIndex += numResults;
+        } else {
+          print('Erreur : ${response.statusCode}');
+          break;
+        }
+      } catch (e) {
+        print('Erreur de requête : $e');
+        break;
       }
-    } catch (e) {
-      print('Erreur de requête : $e');
-      return [];
     }
+
+    return allImageUrls;
   }
 
-  // Fonction pour extraire des mots-clés des résultats de `searchImage`
+
   List<String> _extractKeywords(Map<String, dynamic> searchResult) {
+    // Extraire les labelAnnotations
     final labelAnnotations = searchResult['responses'][0]['labelAnnotations'] ?? [];
-    return labelAnnotations.map<String>((label) => label['description'] as String).toList();
+
+    // Extraire webDetection (contient bestGuessLabels et webEntities)
+    final webDetection = searchResult['responses'][0]['webDetection'] ?? {};
+
+    // Extraire les descriptions des labelAnnotations
+    final labels = labelAnnotations.map<String>((label) => label['description'] as String).toList();
+
+    // Extraire les bestGuessLabels
+    final bestGuessLabels = webDetection['bestGuessLabels'] ?? [];
+    final bestGuessDescriptions = bestGuessLabels.map<String>((label) => label['label'] as String).toList();
+
+    // Extraire les descriptions des webEntities
+    final webEntities = webDetection['webEntities'] ?? [];
+    final webEntityDescriptions = webEntities.map<String>((entity) => entity['description'] as String).toList();
+
+    // Fusionner toutes les descriptions dans l'ordre de priorité
+    return [...bestGuessDescriptions, ...webEntityDescriptions, ...labels];
   }
 
-  // Fonction pour extraire les URL d'images de la réponse de recherche Google Custom Search
   List<String> _extractImageUrls(Map<String, dynamic> data) {
     final items = data['items'] ?? [];
     return items.map<String>((item) => item['link'] as String).toList();

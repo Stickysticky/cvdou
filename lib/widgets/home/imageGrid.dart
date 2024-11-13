@@ -19,12 +19,32 @@ class ImageGridWidget extends StatelessWidget {
         ),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return Image.network(
-            imageUrls[index],
-            fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () => _showImagePopup(context, imageUrls[index]),
+            child: Image.network(
+              imageUrls[index],
+              fit: BoxFit.cover,
+            ),
           );
         },
       ),
+    );
+  }
+
+  void _showImagePopup(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
     );
   }
 }
