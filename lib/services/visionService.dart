@@ -7,12 +7,16 @@ import 'package:image_picker/image_picker.dart';
 class VisionService {
   final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
 
-  Future<Map<String, dynamic>?> searchImage(File imageFile) async {
+
+  //Future<Map<String, dynamic>?> searchImage(File imageFile) async {
+  Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
     final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
 
     final bytes = await imageFile.readAsBytes();
     final base64Image = base64Encode(bytes);
 
+    //récupération directe d'images
+    /*
     final requestBody = jsonEncode({
       "requests": [
         {
@@ -29,6 +33,20 @@ class VisionService {
           "imageContext": {
             "languageHints": ["fr"],
           }
+        }
+      ]
+    });*/
+
+    //analyse de l'image pour une recherche par infos
+    final requestBody = jsonEncode({
+      "requests": [
+        {
+          "image": {
+            "content": base64Image,
+          },
+          "features": [
+            { "type": "LABEL_DETECTION", "maxResults": 5 },
+          ]
         }
       ]
     });
@@ -53,7 +71,7 @@ class VisionService {
     }
   }
 
-
+/*
   List<String> extractKeywords(Map<String, dynamic> analysisResult) {
     List<String> keywords = [];
 
@@ -77,7 +95,7 @@ class VisionService {
 
     // Éliminer les doublons et retourner la liste des mots-clés
     return keywords.toSet().toList();
-  }
+  }*/
 
   List<String> extractUrlImages(Map<String, dynamic> analysisResult) {
     List<String> urlImages = [];
@@ -110,12 +128,12 @@ class VisionService {
     // Éliminer les doublons et retourner la liste des mots-clés
     return urlImages.toSet().toList();
   }
-
+/*
   Future<List<String>> analyzeImage(File image) async {
     final analysis = await searchImage(image);
     List<String> urlImages = await extractUrlImages(analysis!);
     print(urlImages);
     return urlImages;
-  }
+  }*/
 
 }

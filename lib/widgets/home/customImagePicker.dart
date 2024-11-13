@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cvdou/services/visionService.dart';
 import 'package:cvdou/widgets/home/searchBtn.dart';
 import 'package:cvdou/widgets/home/imageGrid.dart';
+import 'package:cvdou/services/googleSearchService.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final List<String> urlImages;
@@ -20,6 +21,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   File? _image;
   final VisionService _visionService = VisionService();
   late List<String> _urlImages;
+  final GoogleSearchService _googleSearchService = GoogleSearchService();
 
   @override
   void initState() {
@@ -81,7 +83,9 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 30),
         SearchBtn(
           onPressed: () async {
-            List<String> urlImages = await _visionService.analyzeImage(_image!);
+            final analysis = await _visionService.analyseImage(_image!);
+            List<String> urlImages = await _googleSearchService.searchRelatedImages(analysis!);
+            print(urlImages);
             setState(() {
               _urlImages = urlImages;
             });
