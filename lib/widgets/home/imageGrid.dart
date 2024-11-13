@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ImageGridWidget extends StatelessWidget {
   final List<String> imageUrls;
@@ -24,6 +25,16 @@ class ImageGridWidget extends StatelessWidget {
             child: Image.network(
               imageUrls[index],
               fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child; // L'image est prête
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Center(child: Icon(Icons.error));
+              },
             ),
           );
         },
@@ -41,6 +52,16 @@ class ImageGridWidget extends StatelessWidget {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child; // L'image est prête
+                } else {
+                  return Center(child: CircularProgressIndicator()); // Afficher un indicateur de chargement
+                }
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Center(child: Icon(Icons.error)); // Afficher une icône d'erreur dans le popup
+              },
             ),
           ),
         );
