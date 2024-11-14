@@ -7,15 +7,15 @@ class GoogleSearchService {
   final String _cx = '303898d572aed4acc';
 
   Future<List<ImageResult>> searchRelatedImages(Map<String, dynamic> searchResult) async {
+    List<ImageResult> allImages = _buildImagesFromRelatedImages(searchResult);
+
     List<String> keywords = _extractKeywords(searchResult);
     final query = keywords.join(" ");
     final numResults = 10;
 
-    List<ImageResult> allImages = [];
-
     int startIndex = 1;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       final searchUrl = Uri.parse(
           'https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
       );
@@ -72,11 +72,44 @@ class GoogleSearchService {
     final items = data['items'] ?? [];
     return items.map<ImageResult>((item) {
       final urlImage = item['link'] as String;
-      final urlSource = item['source'] as String? ?? '';
-      final price = item['price'] != null ? item['price'] as double : null;
+      final urlSource = item['image']['contextLink'] as String;
+      final price = item['product'] != null && item['product']['price'] != null ? item['product']['price'] as double : null;
 
+      print(price);
       return ImageResult(urlImage, urlSource, price);
     }).toList();
+  }
+
+  List<ImageResult> _buildImagesFromRelatedImages(Map<String, dynamic> analysisResult) {
+    List<ImageResult> images = [];
+
+    // Extraire les labels détectés
+    if (analysisResult['responses']?[0]['webDetection']?['fullMatchingImages'] != null) {
+      for (var image in analysisResult['responses']?[0]['webDetection']?['fullMatchingImages']) {
+        if (image['url'] != null) {
+          images.add(ImageResult(image['url'], '', null));
+        }
+      }
+    }
+
+    if (analysisResult['responses']?[0]['webDetection']?['partialMatchingImages'] != null) {
+      for (var image in analysisResult['responses']?[0]['webDetection']?['partialMatchingImages']) {
+        if (image['url'] != null) {
+          images.add(ImageResult(image['url'], '', null));
+        }
+      }
+    }
+
+    if (analysisResult['responses']?[0]['webDetection']?['partialMatchingImages'] != null) {
+      for (var image in analysisResult['responses']?[0]['webDetection']?['partialMatchingImages']) {
+        if (image['url'] != null) {
+          images.add(ImageResult(image['url'], '', null));
+        }
+      }
+    }
+
+    // Éliminer les doublons et retourner la liste des mots-clés
+    return images.toSet().toList();
   }
 
 

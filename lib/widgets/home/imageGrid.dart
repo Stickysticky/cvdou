@@ -27,7 +27,7 @@ class ImageGridWidget extends StatelessWidget {
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) {
-                  return child; // L'image est prête
+                  return child;
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }

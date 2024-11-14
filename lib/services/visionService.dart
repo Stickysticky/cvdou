@@ -1,22 +1,20 @@
 // lib/services/vision_service.dart
 import 'dart:convert';
 import 'dart:io';
+import 'package:cvdou/objects/imageResult.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
+import 'package:cvdou/objects/imageResult.dart';
 
 class VisionService {
   final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
 
-
-  //Future<Map<String, dynamic>?> searchImage(File imageFile) async {
-  Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
+  /*
+  Future<Map<String, dynamic>?> searchImage(File imageFile) async {
     final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
 
     final bytes = await imageFile.readAsBytes();
     final base64Image = base64Encode(bytes);
 
-    //récupération directe d'images
-    /*
     final requestBody = jsonEncode({
       "requests": [
         {
@@ -25,19 +23,45 @@ class VisionService {
           },
           "features": [
             { "type": "LABEL_DETECTION", "maxResults": 10 },
-            { "type": "WEB_DETECTION", "maxResults": 100 },
-            { "type": "LANDMARK_DETECTION", "maxResults": 100 },
+            { "type": "WEB_DETECTION", "maxResults": 5 },
+            { "type": "LANDMARK_DETECTION", "maxResults": 10 },
             { "type": "OBJECT_LOCALIZATION" },
-            { "type": "LOGO_DETECTION", "maxResults": 100 }
+            { "type": "LOGO_DETECTION", "maxResults": 10 }
           ],
           "imageContext": {
             "languageHints": ["fr"],
           }
         }
       ]
-    });*/
+    });
 
-    //analyse de l'image pour une recherche par infos
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else {
+        print('Erreur : ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Erreur de requête : $e');
+      return null;
+    }
+  }*/
+
+
+  Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
+    final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
+
+    final bytes = await imageFile.readAsBytes();
+    final base64Image = base64Encode(bytes);
+
     final requestBody = jsonEncode({
       "requests": [
         {
@@ -131,6 +155,8 @@ class VisionService {
     // Éliminer les doublons et retourner la liste des mots-clés
     return urlImages.toSet().toList();
   }
+
+
 /*
   Future<List<String>> analyzeImage(File image) async {
     final analysis = await searchImage(image);
