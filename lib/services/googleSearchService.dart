@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:cvdou/objects/imageResult.dart';
 
 class GoogleSearchService {
   final String _apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
   final String _cx = '303898d572aed4acc';
 
-  Future<List<String>> searchRelatedImages(Map<String, dynamic> searchResult) async {
+  Future<List<ImageResult>> searchRelatedImages(Map<String, dynamic> searchResult) async {
     List<String> keywords = _extractKeywords(searchResult);
     final query = keywords.join(" ");
     final numResults = 10;
 
-    List<String> allImageUrls = [];
+    List<ImageResult> allImages = [];
 
     int startIndex = 1;
 
@@ -23,7 +24,7 @@ class GoogleSearchService {
         final response = await http.get(searchUrl);
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
-          allImageUrls.addAll(_extractImageUrls(data));
+          allImages.addAll(_buildImages(data));
 
           startIndex += numResults;
         } else {
@@ -36,7 +37,7 @@ class GoogleSearchService {
       }
     }
 
-    return allImageUrls;
+    return allImages;
   }
 
 
@@ -65,6 +66,17 @@ class GoogleSearchService {
   List<String> _extractImageUrls(Map<String, dynamic> data) {
     final items = data['items'] ?? [];
     return items.map<String>((item) => item['link'] as String).toList();
+  }
+
+  List<ImageResult> _buildImages(Map<String, dynamic> data) {
+    final items = data['items'] ?? [];
+    return items.map<ImageResult>((item) {
+      final urlImage = item['link'] as String;
+      final urlSource = item['source'] as String? ?? '';
+      final price = item['price'] != null ? item['price'] as double : null;
+
+      return ImageResult(urlImage, urlSource, price);
+    }).toList();
   }
 
 

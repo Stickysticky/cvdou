@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cvdou/widgets/home/customAppBar.dart';
 import 'package:cvdou/widgets/home/customImagePicker.dart';
 import 'package:cvdou/widgets/home/imageGrid.dart';
+import 'package:cvdou/objects/imageResult.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,7 +13,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List<String> _urlImages = [];
+  List<ImageResult> _imageResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +24,10 @@ class _HomeState extends State<Home> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CustomImagePicker(urlImages: _urlImages),
+              CustomImagePicker(imageResults: _imageResults),
               SizedBox(height: 20),
-              _urlImages.isNotEmpty
-                  ? ImageGridWidget(imageUrls: _urlImages)
+              _imageResults.isNotEmpty
+                  ? ImageGridWidget(images: _imageResults)
                   : Container(),
             ],
           ),

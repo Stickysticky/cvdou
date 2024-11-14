@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:cvdou/objects/imageResult.dart';
 
 class ImageGridWidget extends StatelessWidget {
-  final List<String> imageUrls;
+  final List<ImageResult> images;
 
-  ImageGridWidget({required this.imageUrls});
+  ImageGridWidget({required this.images});
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +18,12 @@ class ImageGridWidget extends StatelessWidget {
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
         ),
-        itemCount: imageUrls.length,
+        itemCount: images.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => _showImagePopup(context, imageUrls[index]),
+            onTap: () => _showImagePopup(context, images[index].urlImage),
             child: Image.network(
-              imageUrls[index],
+              images[index].urlImage,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) {
@@ -42,7 +42,7 @@ class ImageGridWidget extends StatelessWidget {
     );
   }
 
-  void _showImagePopup(BuildContext context, String imageUrl) {
+  void _showImagePopup(BuildContext context, String urlImage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -50,7 +50,7 @@ class ImageGridWidget extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(10),
             child: Image.network(
-              imageUrl,
+              urlImage,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) {

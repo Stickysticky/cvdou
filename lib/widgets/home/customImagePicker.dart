@@ -5,11 +5,12 @@ import 'package:cvdou/services/visionService.dart';
 import 'package:cvdou/widgets/home/searchBtn.dart';
 import 'package:cvdou/widgets/home/imageGrid.dart';
 import 'package:cvdou/services/googleSearchService.dart';
+import 'package:cvdou/objects/imageResult.dart';
 
 class CustomImagePicker extends StatefulWidget {
-  final List<String> urlImages;
+  final List<ImageResult> imageResults;
 
-  CustomImagePicker({Key? key, required this.urlImages}) : super(key: key);
+  CustomImagePicker({Key? key, required this.imageResults}) : super(key: key);
 
   @override
   _CustomImagePickerState createState() =>
@@ -20,14 +21,14 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
   final VisionService _visionService = VisionService();
-  late List<String> _urlImages;
+  late List<ImageResult> _imageResults;
   final GoogleSearchService _googleSearchService = GoogleSearchService();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _urlImages = widget.urlImages;
+    _imageResults = widget.imageResults;
   }
 
   // Fonction pour ouvrir la caméra
@@ -85,15 +86,15 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SearchBtn(
           onPressed: () async {
             setState(() {
-              _urlImages.clear();
+              _imageResults.clear();
               _isLoading = true;
             });
 
             try {
               final analysis = await _visionService.analyseImage(_image!);
-              List<String> urlImages = await _googleSearchService.searchRelatedImages(analysis!);
+              List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!);
               setState(() {
-                _urlImages = urlImages; // Mettre à jour les URL d'images
+                _imageResults = imageResults;
               });
             } catch (e) {
               print('Erreur : $e');
@@ -107,8 +108,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 20),
         _isLoading
             ? CircularProgressIndicator()
-            : _urlImages.isNotEmpty
-            ? ImageGridWidget(imageUrls: _urlImages)
+            : _imageResults.isNotEmpty
+            ? ImageGridWidget(images: _imageResults)
             : Container(),
       ],
     );
