@@ -25,6 +25,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   late List<ImageResult> _imageResults;
   final GoogleSearchService _googleSearchService = GoogleSearchService();
   bool _isLoading = false;
+  List<String> _selectedFilters = [];
 
   @override
   void initState() {
@@ -83,7 +84,13 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           onPressed: _pickImageFromGallery,
           child: Text("Choisir depuis la galerie"),
         ),
-        FilterSearchBtn(),
+        FilterSearchBtn(
+          onFiltersSelected: (filters){
+            setState(() {
+              _selectedFilters = filters;
+            });
+          }
+        ),
         SizedBox(height: 30),
         SearchBtn(
           onPressed: () async {
@@ -94,7 +101,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
 
             try {
               final analysis = await _visionService.analyseImage(_image!);
-              List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!);
+              final properFilters = _selectedFilters
+                  .map((filter) => filter.toLowerCase().replaceAll(" ", ""))
+                  .toList();
+
+              List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!, properFilters);
               setState(() {
                 _imageResults = imageResults;
               });

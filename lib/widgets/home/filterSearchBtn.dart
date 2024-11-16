@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FilterSearchBtn extends StatefulWidget {
-  const FilterSearchBtn({super.key});
+  final Function(List<String>) onFiltersSelected;
+
+  const FilterSearchBtn({Key? key, required this.onFiltersSelected})
+      : super(key: key);
 
   @override
   State<FilterSearchBtn> createState() => _FilterSearchBtnState();
@@ -10,9 +13,9 @@ class FilterSearchBtn extends StatefulWidget {
 class _FilterSearchBtnState extends State<FilterSearchBtn> {
   // Liste des options à afficher
   final List<Map<String, dynamic>> _options = [
-    {"label": "Option 1", "isChecked": false},
-    {"label": "Option 2", "isChecked": false},
-    {"label": "Option 3", "isChecked": false},
+    {"label": "Vinted", "isChecked": true},
+    {"label": "Amazon", "isChecked": true},
+    {"label": "Aliexpress", "isChecked": false},
   ];
 
   // Fonction pour afficher la popup
@@ -26,14 +29,18 @@ class _FilterSearchBtnState extends State<FilterSearchBtn> {
             child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setDialogState) {
                 return Column(
-                  children: _options.map((option) {
+                  children: _options.map<Widget>((option) {
                     return CheckboxListTile(
-                      title: Text(option['label']),
-                      value: option['isChecked'],
+                      title: Text(option["label"]),
+                      value: option["isChecked"],
                       onChanged: (bool? value) {
+                        // Mettre à jour la valeur de la case cochée
                         setDialogState(() {
-                          option['isChecked'] = value!;
+                          option["isChecked"] = value!;
                         });
+
+                        // Envoyer immédiatement la liste des filtres sélectionnés
+                        _updateFilters();
                       },
                     );
                   }).toList(),
@@ -46,19 +53,22 @@ class _FilterSearchBtnState extends State<FilterSearchBtn> {
               onPressed: () {
                 Navigator.of(context).pop(); // Fermer la popup
               },
-              child: const Text("Annuler"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Fermer la popup
-                print("Options sélectionnées : $_options");
-              },
-              child: const Text("Appliquer"),
+              child: const Text("Fermer"),
             ),
           ],
         );
       },
     );
+  }
+
+  // Fonction pour mettre à jour les filtres sélectionnés
+  void _updateFilters() {
+    final selectedFilters = _options
+        .where((option) => option["isChecked"] == true)
+        .map((option) => option["label"].toString())
+        .toList();
+
+    widget.onFiltersSelected(selectedFilters);
   }
 
   @override
