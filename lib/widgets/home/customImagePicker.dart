@@ -6,6 +6,7 @@ import 'package:cvdou/widgets/home/searchBtn.dart';
 import 'package:cvdou/widgets/home/imageGrid.dart';
 import 'package:cvdou/services/googleSearchService.dart';
 import 'package:cvdou/objects/imageResult.dart';
+import 'package:cvdou/widgets/home/filterSearchBtn.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final List<ImageResult> imageResults;
@@ -82,6 +83,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           onPressed: _pickImageFromGallery,
           child: Text("Choisir depuis la galerie"),
         ),
+        FilterSearchBtn(),
         SizedBox(height: 30),
         SearchBtn(
           onPressed: () async {
