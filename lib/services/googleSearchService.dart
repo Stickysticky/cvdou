@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cvdou/objects/imageResult.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
+import 'package:cvdou/constants/webSitesFilter.dart';
 
 class GoogleSearchService {
   final String _apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
@@ -11,13 +12,20 @@ class GoogleSearchService {
     print(selectedFilters);
     List<ImageResult> allImages = _buildImagesFromRelatedImages(searchResult);
 
+    List<ImageResult> filteredImages = allImages.where((image) {
+      return basicWebsiteFilters.any((filter) => image.urlImage.contains(filter.url));
+    }).toList();
+
     List<String> keywords = _extractKeywords(searchResult);
-    final query = keywords.join(" ");
+
+    final siteFilters = selectedFilters.map((filter) => "site:${filter.url}").join(" OR ");
+    final query = "${keywords.join(" ")} $siteFilters";
+    print (query);
     final numResults = 10;
 
     int startIndex = 1;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
       final searchUrl = Uri.parse(
           'https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
       );
@@ -26,20 +34,29 @@ class GoogleSearchService {
         final response = await http.get(searchUrl);
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
-          allImages.addAll(_buildImages(data));
 
+          // Vérifier si des résultats sont présents
+          final items = data['items'] ?? [];
+          if (items.isEmpty) {
+            print("Aucun résultat, sortie de la boucle.");
+            break; // Sortir de la boucle si aucun résultat
+          }
+
+          // Ajouter les résultats
+          filteredImages.addAll(_buildImages(data));
           startIndex += numResults;
         } else {
           print('Erreur : ${response.statusCode}');
-          break;
+          break; // Sortir en cas d'erreur de statut HTTP
         }
       } catch (e) {
         print('Erreur de requête : $e');
-        break;
+        break; // Sortir en cas d'erreur
       }
     }
 
-    return allImages;
+
+    return filteredImages;
   }
 
 
@@ -50,20 +67,28 @@ class GoogleSearchService {
     // Extraire webDetection (contient bestGuessLabels et webEntities)
     final webDetection = searchResult['responses'][0]['webDetection'] ?? {};
 
-    // Extraire les descriptions des labelAnnotations
-    final labels = labelAnnotations.map<String>((label) => label['description'] as String).toList();
+    // Extraire les descriptions des labelAnnotations (limitées à 3)
+    final labels = labelAnnotations
+        .take(3)
+        .map<String>((label) => label['description'] as String)
+        .toList();
 
-    // Extraire les bestGuessLabels
+    // Extraire les bestGuessLabels (mettre entre guillemets)
     final bestGuessLabels = webDetection['bestGuessLabels'] ?? [];
-    final bestGuessDescriptions = bestGuessLabels.map<String>((label) => label['label'] as String).toList();
+    final bestGuessDescriptions = bestGuessLabels.isNotEmpty
+        ? ['"${bestGuessLabels[0]['label']}"']
+        : [];
 
-    // Extraire les descriptions des webEntities
+    // Extraire les descriptions des webEntities (limitées à 1)
     final webEntities = webDetection['webEntities'] ?? [];
-    final webEntityDescriptions = webEntities.map<String>((entity) => entity['description'] as String).toList();
+    final webEntityDescriptions = webEntities.isNotEmpty
+        ? [webEntities[0]['description'] as String]
+        : [];
 
     // Fusionner toutes les descriptions dans l'ordre de priorité
     return [...bestGuessDescriptions, ...webEntityDescriptions, ...labels];
   }
+
 
   List<String> _extractImageUrls(Map<String, dynamic> data) {
     final items = data['items'] ?? [];
