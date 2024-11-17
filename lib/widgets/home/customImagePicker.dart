@@ -7,6 +7,7 @@ import 'package:cvdou/widgets/home/imageGrid.dart';
 import 'package:cvdou/services/googleSearchService.dart';
 import 'package:cvdou/objects/imageResult.dart';
 import 'package:cvdou/widgets/home/filterSearchBtn.dart';
+import 'package:cvdou/objects/websiteFilter.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final List<ImageResult> imageResults;
@@ -25,7 +26,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   late List<ImageResult> _imageResults;
   final GoogleSearchService _googleSearchService = GoogleSearchService();
   bool _isLoading = false;
-  List<String> _selectedFilters = [];
+  List<WebsiteFilter> _selectedFilters = [];
 
   @override
   void initState() {
@@ -101,11 +102,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
 
             try {
               final analysis = await _visionService.analyseImage(_image!);
-              final properFilters = _selectedFilters
-                  .map((filter) => filter.toLowerCase().replaceAll(" ", ""))
-                  .toList();
 
-              List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!, properFilters);
+              List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!, _selectedFilters);
               setState(() {
                 _imageResults = imageResults;
               });
