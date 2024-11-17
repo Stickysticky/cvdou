@@ -13,13 +13,6 @@ class FilterSearchBtn extends StatefulWidget {
 }
 
 class _FilterSearchBtnState extends State<FilterSearchBtn> {
-  // Liste des options à afficher
-  /*final List<Map<String, dynamic>> _options = [
-    {"label": "Vinted", "isChecked": true},
-    {"label": "Amazon", "isChecked": true},
-    {"label": "Aliexpress", "isChecked": false},
-  ];*/
-
   final List<WebsiteFilter> _options = basicWebsiteFilters;
 
   // Fonction pour afficher la popup

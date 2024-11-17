@@ -11,17 +11,24 @@ class GoogleSearchService {
   Future<List<ImageResult>> searchRelatedImages(Map<String, dynamic> searchResult, List<WebsiteFilter> selectedFilters) async {
     print(selectedFilters);
     List<ImageResult> allImages = _buildImagesFromRelatedImages(searchResult);
+    List<ImageResult> filteredImages;
 
-    List<ImageResult> filteredImages = allImages.where((image) {
-      return basicWebsiteFilters.any((filter) => image.urlImage.contains(filter.url));
-    }).toList();
+    if(selectedFilters.isNotEmpty){
+      filteredImages = allImages.where((image) {
+        return selectedFilters.any((filter) => image.urlSource.contains(filter.url));
+      }).toList();
+    } else {
+      filteredImages = allImages;
+    }
+
 
     List<String> keywords = _extractKeywords(searchResult);
 
-    final siteFilters = selectedFilters.map((filter) => "site:${filter.url}").join(" OR ");
+    final siteFilters = selectedFilters.isNotEmpty ? selectedFilters.map((filter) => "site:${filter.url}").join(" OR ") : '';
     final query = "${keywords.join(" ")} $siteFilters";
-    print (query);
     final numResults = 10;
+
+    print(query);
 
     int startIndex = 1;
 
@@ -54,7 +61,6 @@ class GoogleSearchService {
         break; // Sortir en cas d'erreur
       }
     }
-
 
     return filteredImages;
   }
@@ -112,26 +118,19 @@ class GoogleSearchService {
 
     // Extraire les labels détectés
     if (analysisResult['responses']?[0]['webDetection']?['fullMatchingImages'] != null) {
-      for (var image in analysisResult['responses']?[0]['webDetection']?['fullMatchingImages']) {
-        if (image['url'] != null) {
-          images.add(ImageResult(image['url'], '', null));
-        }
-      }
-    }
+      for (var image in analysisResult['responses']?[0]['webDetection']?['pagesWithMatchingImages']) {
 
-    if (analysisResult['responses']?[0]['webDetection']?['partialMatchingImages'] != null) {
-      for (var image in analysisResult['responses']?[0]['webDetection']?['partialMatchingImages']) {
-        if (image['url'] != null) {
-          images.add(ImageResult(image['url'], '', null));
-        }
-      }
-    }
+        String source = image['url'];
+        String urlImage;
 
-    if (analysisResult['responses']?[0]['webDetection']?['partialMatchingImages'] != null) {
-      for (var image in analysisResult['responses']?[0]['webDetection']?['partialMatchingImages']) {
-        if (image['url'] != null) {
-          images.add(ImageResult(image['url'], '', null));
+        if (image['fullMatchingImages'] != null && image['fullMatchingImages'].isNotEmpty) {
+          urlImage = image['fullMatchingImages'].first['url'];
+        } else if (image['partialMatchingImages'] != null && image['partialMatchingImages'].isNotEmpty) {
+          urlImage = image['partialMatchingImages'].first['url'];
+        } else {
+          urlImage = '';
         }
+        images.add(ImageResult(urlImage, source, null));
       }
     }
 
