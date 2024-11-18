@@ -25,7 +25,7 @@ class GoogleSearchService {
     List<String> keywords = _extractKeywords(searchResult);
 
     final siteFilters = selectedFilters.isNotEmpty ? selectedFilters.map((filter) => "site:${filter.url}").join(" OR ") : '';
-    final query = "${keywords.join(" ")} $siteFilters";
+    String query = "${keywords.join(" ")} $siteFilters";
     final numResults = 10;
 
     print(query);
@@ -59,6 +59,44 @@ class GoogleSearchService {
       } catch (e) {
         print('Erreur de requête : $e');
         break; // Sortir en cas d'erreur
+      }
+    }
+
+    if(filteredImages.isEmpty && keywords.isNotEmpty){ //à refacto
+      String fallBackQuery = keywords[0] + ' ' + siteFilters;
+
+      print(fallBackQuery);
+
+      startIndex = 1;
+
+      for (int i = 0; i < 3; i++) {
+        final searchUrl = Uri.parse(
+            'https://www.googleapis.com/customsearch/v1?q=$fallBackQuery&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
+        );
+
+        try {
+          final response = await http.get(searchUrl);
+          if (response.statusCode == 200) {
+            final data = jsonDecode(response.body);
+
+            // Vérifier si des résultats sont présents
+            final items = data['items'] ?? [];
+            if (items.isEmpty) {
+              print("Aucun résultat, sortie de la boucle.");
+              break; // Sortir de la boucle si aucun résultat
+            }
+
+            // Ajouter les résultats
+            filteredImages.addAll(_buildImages(data));
+            startIndex += numResults;
+          } else {
+            print('Erreur : ${response.statusCode}');
+            break; // Sortir en cas d'erreur de statut HTTP
+          }
+        } catch (e) {
+          print('Erreur de requête : $e');
+          break; // Sortir en cas d'erreur
+        }
       }
     }
 
