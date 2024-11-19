@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cvdou/widgets/home/customAppBar.dart';
+import 'package:cvdou/widgets/common/customAppBar.dart';
 import 'package:cvdou/widgets/home/customImagePicker.dart';
 import 'package:cvdou/widgets/home/imageGrid.dart';
 import 'package:cvdou/objects/imageResult.dart';

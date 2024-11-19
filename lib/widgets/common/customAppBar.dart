@@ -18,6 +18,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
           color: _titleColor,
           fontSize: _fontSize
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.settings, color: _titleColor), // Icône pour les paramètres
+          onPressed: () {
+            // Naviguer vers la page des paramètres
+            Navigator.pushNamed(context, '/settings');
+          },
+        ),
+      ],
     );
   }
 
