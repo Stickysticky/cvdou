@@ -30,78 +30,76 @@ class GoogleSearchService {
 
     print(query);
 
-    int startIndex = 1;
+    List<ImageResult> searchedImages = await searchCustomSearch(query, numResults, 1);
+    filteredImages.addAll(searchedImages);
 
-    for (int i = 0; i < 3; i++) {
-      final searchUrl = Uri.parse(
-          'https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
-      );
-
-      try {
-        final response = await http.get(searchUrl);
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body);
-
-          // Vérifier si des résultats sont présents
-          final items = data['items'] ?? [];
-          if (items.isEmpty) {
-            print("Aucun résultat, sortie de la boucle.");
-            break; // Sortir de la boucle si aucun résultat
-          }
-
-          // Ajouter les résultats
-          filteredImages.addAll(_buildImages(data));
-          startIndex += numResults;
-        } else {
-          print('Erreur : ${response.statusCode}');
-          break; // Sortir en cas d'erreur de statut HTTP
-        }
-      } catch (e) {
-        print('Erreur de requête : $e');
-        break; // Sortir en cas d'erreur
-      }
-    }
-
-    if(filteredImages.isEmpty && keywords.isNotEmpty){ //à refacto
+    if(filteredImages.isEmpty && keywords.isNotEmpty){
       String fallBackQuery = keywords[0] + ' ' + siteFilters;
-
       print(fallBackQuery);
 
-      startIndex = 1;
+      searchedImages = await searchCustomSearch(fallBackQuery, numResults,1);
 
-      for (int i = 0; i < 3; i++) {
-        final searchUrl = Uri.parse(
-            'https://www.googleapis.com/customsearch/v1?q=$fallBackQuery&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex'
-        );
-
-        try {
-          final response = await http.get(searchUrl);
-          if (response.statusCode == 200) {
-            final data = jsonDecode(response.body);
-
-            // Vérifier si des résultats sont présents
-            final items = data['items'] ?? [];
-            if (items.isEmpty) {
-              print("Aucun résultat, sortie de la boucle.");
-              break; // Sortir de la boucle si aucun résultat
-            }
-
-            // Ajouter les résultats
-            filteredImages.addAll(_buildImages(data));
-            startIndex += numResults;
-          } else {
-            print('Erreur : ${response.statusCode}');
-            break; // Sortir en cas d'erreur de statut HTTP
-          }
-        } catch (e) {
-          print('Erreur de requête : $e');
-          break; // Sortir en cas d'erreur
-        }
+      if(searchedImages.isEmpty){
+        fallBackQuery = fallBackQuery
+            .replaceAll(RegExp(r'\bx\b', caseSensitive: false), '')
+            .replaceAll(RegExp(r'[^a-zA-Z0-9.\s:]'), '')
+            .replaceAll(RegExp(r'\s+'), ' ')
+            .trim();
+        print(fallBackQuery);
+        searchedImages = await searchCustomSearch(fallBackQuery, numResults,1);
       }
+      filteredImages.addAll(searchedImages);
     }
 
     return filteredImages;
   }
+
+  Future<List<ImageResult>> searchCustomSearch(String query, int numResults, int startIndex) async {
+    List<ImageResult> imagesResult = [];
+
+    for (int i = 0; i < 3; i++) {
+      // Construire l'URL de la requête
+      final searchUrl = Uri.parse(
+        'https://www.googleapis.com/customsearch/v1?q=$query&cx=$_cx&searchType=image&key=$_apiKey&num=$numResults&start=$startIndex',
+      );
+
+      try {
+        // Envoyer la requête HTTP
+        final response = await http.get(searchUrl);
+
+        // Vérifier le statut HTTP
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+
+          // Vérifier si des items sont présents
+          final items = data['items'] ?? [];
+          if (items.isEmpty) {
+            print("Aucun résultat trouvé, sortie de la boucle.");
+            break; // Sortir de la boucle si aucun résultat
+          }
+
+          // Ajouter les résultats à la liste
+          final newImages = await _buildImages(data);
+          imagesResult.addAll(newImages);
+
+          // Mettre à jour l'index de départ
+          startIndex += numResults;
+        } else {
+          print('Erreur HTTP : ${response.statusCode}');
+          break; // Sortir en cas d'erreur de statut HTTP
+        }
+      } catch (e) {
+        // Gérer les erreurs de requête
+        print('Erreur de requête : $e');
+        break; // Sortir en cas d'erreur pour éviter une boucle infinie
+      }
+    }
+
+    // Retourner la liste des résultats
+    return imagesResult;
+  }
+
+
 
 
   List<String> _extractKeywords(Map<String, dynamic> searchResult) {
