@@ -11,4 +11,15 @@ class ImageResult {
   String get urlSource => _urlSource;
 
   double? get price => _price;
+
+  static List<ImageResult> filterUniqueUrlSource(List<ImageResult> imageResults) {
+    final seenUrlSources = <String>{};
+    return imageResults.where((image) {
+      final isUnique = !seenUrlSources.contains(image.urlSource);
+      if (isUnique) {
+        seenUrlSources.add(image.urlSource);
+      }
+      return isUnique;
+    }).toList();
+  }
 }

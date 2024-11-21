@@ -50,7 +50,7 @@ class GoogleSearchService {
       filteredImages.addAll(searchedImages);
     }
 
-    return filteredImages;
+    return ImageResult.filterUniqueUrlSource(filteredImages);
   }
 
   Future<List<ImageResult>> searchCustomSearch(String query, int numResults, int startIndex) async {
