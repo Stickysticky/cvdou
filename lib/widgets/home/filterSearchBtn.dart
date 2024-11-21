@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cvdou/constants/webSitesFilter.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FilterSearchBtn extends StatefulWidget {
   final Function(List<WebsiteFilter>) onFiltersSelected;
@@ -13,7 +16,32 @@ class FilterSearchBtn extends StatefulWidget {
 }
 
 class _FilterSearchBtnState extends State<FilterSearchBtn> {
-  final List<WebsiteFilter> _options = basicWebsiteFilters;
+
+  List<WebsiteFilter> _options = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWebsiteFilters();
+  }
+
+  Future<void> _loadWebsiteFilters() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedFilters = prefs.getString('websiteFilters');
+    if (storedFilters != null) {
+      List<dynamic> decodedFilters = jsonDecode(storedFilters);
+      setState(() {
+        _options = decodedFilters
+            .map((filter) => WebsiteFilter(filter['lib'], filter['url'], filter['isChecked']))
+            .toList();
+      });
+    } else {
+      setState(() {
+        _options = basicWebsiteFilters;
+      });
+    }
+  }
+
 
   // Fonction pour afficher la popup
   void _showFilterDialog(BuildContext context) {
