@@ -41,7 +41,6 @@ class GoogleSearchService {
 
       if(searchedImages.isEmpty){
         fallBackQuery = fallBackQuery
-            .replaceAll(RegExp(r'\bx\b', caseSensitive: false), '')
             .replaceAll(RegExp(r'[^a-zA-Z0-9.\s:]'), '')
             .replaceAll(RegExp(r'\s+'), ' ')
             .trim();
