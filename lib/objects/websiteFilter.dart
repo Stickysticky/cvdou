@@ -4,7 +4,7 @@ class WebsiteFilter {
   String _url;
 
   // Constructeur corrigé
-  WebsiteFilter(this._lib, this._url, [this._isChecked = true]);
+  WebsiteFilter(this._lib, this._url, [this._isChecked = false]);
 
   // Getters
   bool get isChecked => _isChecked;

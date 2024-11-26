@@ -4,6 +4,7 @@ import 'package:cvdou/constants/webSitesFilter.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:cvdou/constants/apiKeys.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,12 +15,30 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   List<WebsiteFilter> _websiteFilters = [];
+  Map<String, String> _apiKeys = {};
 
   @override
   void initState() {
     super.initState();
     _loadWebsiteFilters();
+    _loadApiKeys();
   }
+
+  Future<void> _loadApiKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedApiKeys = prefs.getString('apiKeys');
+    if (storedApiKeys != null) {
+      final Map<String, dynamic> decodedKeys = jsonDecode(storedApiKeys);
+      setState(() {
+        _apiKeys = decodedKeys.map((key, value) => MapEntry(key, value.toString()));
+      });
+    } else {
+      setState(() {
+        _apiKeys = basicApiKeys;
+      });
+    }
+  }
+
 
   Future<void> _loadWebsiteFilters() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -51,62 +70,98 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Ligne avec le titre et le FloatingActionButton
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Filtrage",
-                  style: TextStyle(fontSize: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0,0,15,0),
-                  child: FloatingActionButton(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Ligne avec le titre et le FloatingActionButton
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Filtrage",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  FloatingActionButton(
                     mini: true,
                     onPressed: _addWebsiteFilter,
                     child: Icon(Icons.add),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+              SizedBox(height: 10),
+              // Liste des éléments avec icône modification
+              ListView.builder(
+                itemCount: _websiteFilters.length,
+                shrinkWrap: true, // Empêcher la ListView de prendre tout l'espace
+                physics: NeverScrollableScrollPhysics(), // Désactiver le défilement interne
+                itemBuilder: (context, index) {
+                  final websiteFilter = _websiteFilters[index];
+                  return ListTile(
+                    title: Text(
+                      websiteFilter.lib,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      websiteFilter.url,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        _editWebsiteFilter(context, websiteFilter);
+                      },
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 30),
+              Text(
+                "Clées API",
+                style: TextStyle(fontSize: 30),
+              ),
+              SizedBox(height: 10),
+              // Liste des clés API
+              ListView.builder(
+                itemCount: _apiKeys.length,
+                shrinkWrap: true, // Empêcher la ListView de prendre tout l'espace
+                physics: NeverScrollableScrollPhysics(), // Désactiver le défilement interne
+                itemBuilder: (context, index) {
+                  final entries = _apiKeys.entries.toList();
+                  final key = entries[index].key;
+                  final value = entries[index].value;
+
+                  return ListTile(
+                    title: Text(
+                      key,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      value,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        _editApiKeys(context, _apiKeys, key);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          // Liste des éléments avec icône modification
-          Expanded(
-            child: ListView.builder(
-              itemCount: _websiteFilters.length,
-              itemBuilder: (context, index) {
-                final websiteFilter = _websiteFilters[index];
-                return ListTile(
-                  title: Text(
-                    websiteFilter.lib,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  subtitle: Text(
-                    websiteFilter.url,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      _editWebsiteFilter(context, websiteFilter);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
+
 
   void _addWebsiteFilter() {
     // Ajouter un nouveau filtre
@@ -158,6 +213,50 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         );
       },
+    );
+  }
+
+  void _editApiKeys(BuildContext context, Map<String, String> apiKeys, String key){
+    TextEditingController codeKeyController = TextEditingController(
+      text: apiKeys[key]
+    );
+    
+    showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            title: Text("Modifier la clée"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                  TextField(
+                    controller: codeKeyController,
+                    decoration: InputDecoration(
+                      labelText: key
+                    ),
+                  )
+              ]
+            ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                  Navigator.of(dialogContext).pop(); // Fermer le dialogue sans sauvegarde
+                },
+                child: Text("Annuler"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _apiKeys[key] = codeKeyController.text;
+                      //_saveWebsiteFilters(); // Sauvegarder les modifications
+                    });
+                    Navigator.of(dialogContext).pop(); // Fermer le dialogue après sauvegarde
+                  },
+                  child: Text("Sauvegarder"),
+                ),
+              ]
+          );
+        }
     );
   }
 
