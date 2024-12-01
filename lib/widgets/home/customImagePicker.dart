@@ -8,6 +8,11 @@ import 'package:cvdou/services/googleSearchService.dart';
 import 'package:cvdou/objects/imageResult.dart';
 import 'package:cvdou/widgets/home/filterSearchBtn.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
+import 'package:cvdou/objects/apiKey.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:cvdou/constants/apiKeys.dart';
+
 
 class CustomImagePicker extends StatefulWidget {
   final List<ImageResult> imageResults;
@@ -27,11 +32,14 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   final GoogleSearchService _googleSearchService = GoogleSearchService();
   bool _isLoading = false;
   List<WebsiteFilter> _selectedFilters = [];
+  List<ApiKey> _apiKeys = [];
+
 
   @override
   void initState() {
     super.initState();
     _imageResults = widget.imageResults;
+    _loadApiKeys();
   }
 
   // Fonction pour ouvrir la caméra
@@ -95,6 +103,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 30),
         SearchBtn(
           onPressed: () async {
+
+            if (_checkApiKeys()){
+              return;
+            }
+
             setState(() {
               _imageResults.clear();
               _isLoading = true;
@@ -129,5 +142,50 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   @override
   Widget build(BuildContext context) {
     return _image != null ? selectedImage() : unselectedImage();
+  }
+
+
+
+  bool _checkApiKeys(){
+    bool checkShowDialog = false;
+    for(var key in _apiKeys){
+      if(key.key == ''){
+        checkShowDialog = true;
+        break;
+      }
+    }
+
+    if(checkShowDialog){
+      showDialog(
+          context: context,
+          builder: (BuildContext dialogContext)
+          {
+            return AlertDialog(
+                title: Text("Informations utilisation"),
+                content:
+                Text("Cette application utilise l'api google vision ai et google custom search. Veuillez ajouter vos clés API dans les paramètres")
+            );
+          }
+      );
+    }
+
+    return !checkShowDialog;
+  }
+
+  Future<void> _loadApiKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedApiKeys = prefs.getString('apiKeys');
+    if (storedApiKeys != null) {
+      List<dynamic> decodedKeys = jsonDecode(storedApiKeys);
+      setState(() {
+        _apiKeys = decodedKeys
+            .map((key) => ApiKey(key['libId'], key['lib'], key['key']))
+            .toList();
+      });
+    } else {
+      setState(() {
+        _apiKeys = basicApiKeys;
+      });
+    }
   }
 }
