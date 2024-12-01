@@ -245,9 +245,9 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                   TextField(
                     controller: codeKeyController,
-                    decoration: InputDecoration(
+                    /*decoration: InputDecoration(
                       labelText: apiKey.key
-                    ),
+                    ),*/
                   )
               ]
             ),

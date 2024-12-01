@@ -6,6 +6,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/home',
     routes: {
+      //'/home': (context) => Home(key: UniqueKey()),
       '/home': (context) => Home(),
       '/settings': (context) => SettingsPage(),
     },

@@ -78,7 +78,6 @@ class VisionService {
         }
       ]
     });
-
     try {
       final response = await http.post(
         url,

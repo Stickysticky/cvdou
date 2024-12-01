@@ -39,9 +39,13 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   void initState() {
     super.initState();
     _imageResults = widget.imageResults;
-    _loadApiKeys();
+    _initializeApiKeys();
+  }
 
-    ApiKey? apiKey = ApiKey.getFromIdLib('', _apiKeys);
+  Future<void> _initializeApiKeys() async {
+    await _loadApiKeys();
+
+    ApiKey? apiKey = ApiKey.getFromIdLib('googleVisionAi', _apiKeys);
     String key = apiKey != null ? apiKey.key : '';
     _visionService = VisionService(key);
   }
@@ -173,7 +177,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
       );
     }
 
-    return !checkShowDialog;
+    return checkShowDialog;
   }
 
   Future<void> _loadApiKeys() async {
@@ -191,5 +195,6 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         _apiKeys = basicApiKeys;
       });
     }
+    print(_apiKeys);
   }
 }
