@@ -5,6 +5,7 @@ import 'package:cvdou/objects/websiteFilter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cvdou/constants/apiKeys.dart';
+import 'package:cvdou/objects/apiKey.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -15,7 +16,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   List<WebsiteFilter> _websiteFilters = [];
-  Map<String, String> _apiKeys = {};
+  List<ApiKey> _apiKeys = basicApiKeys;
 
   @override
   void initState() {
@@ -28,9 +29,11 @@ class _SettingsPageState extends State<SettingsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedApiKeys = prefs.getString('apiKeys');
     if (storedApiKeys != null) {
-      final Map<String, dynamic> decodedKeys = jsonDecode(storedApiKeys);
+      List<dynamic> decodedKeys = jsonDecode(storedApiKeys);
       setState(() {
-        _apiKeys = decodedKeys.map((key, value) => MapEntry(key, value.toString()));
+        _apiKeys = decodedKeys
+            .map((key) => ApiKey(key['libId'], key['lib'], key['key']))
+            .toList();
       });
     } else {
       setState(() {
@@ -67,6 +70,18 @@ class _SettingsPageState extends State<SettingsPage> {
     })
         .toList();
     await prefs.setString('websiteFilters', jsonEncode(filtersToSave));
+  }
+
+  Future<void> _saveApiKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Map<String, dynamic>> keysToSave = _apiKeys
+        .map((apiKey) => {
+      'libId': apiKey.libId,
+      'lib': apiKey.lib,
+      'key': apiKey.key,
+    })
+        .toList();
+    await prefs.setString('apiKeys', jsonEncode(keysToSave));
   }
 
   @override
@@ -133,23 +148,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 shrinkWrap: true, // Empêcher la ListView de prendre tout l'espace
                 physics: NeverScrollableScrollPhysics(), // Désactiver le défilement interne
                 itemBuilder: (context, index) {
-                  final entries = _apiKeys.entries.toList();
-                  final key = entries[index].key;
-                  final value = entries[index].value;
+
+                  final apiKey = _apiKeys[index];
 
                   return ListTile(
                     title: Text(
-                      key,
+                      apiKey.lib,
                       style: TextStyle(fontSize: 18),
                     ),
                     subtitle: Text(
-                      value,
+                      apiKey.key,
                       style: TextStyle(color: Colors.grey),
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
-                        _editApiKeys(context, _apiKeys, key);
+                        _editApiKeys(context, apiKey);
                       },
                     ),
                   );
@@ -216,9 +230,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _editApiKeys(BuildContext context, Map<String, String> apiKeys, String key){
+  void _editApiKeys(BuildContext context, ApiKey apiKey){
     TextEditingController codeKeyController = TextEditingController(
-      text: apiKeys[key]
+      text: apiKey.key
     );
     
     showDialog(
@@ -232,7 +246,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   TextField(
                     controller: codeKeyController,
                     decoration: InputDecoration(
-                      labelText: key
+                      labelText: apiKey.key
                     ),
                   )
               ]
@@ -247,8 +261,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      _apiKeys[key] = codeKeyController.text;
-                      //_saveWebsiteFilters(); // Sauvegarder les modifications
+                      setState(() {
+                        apiKey.key = codeKeyController.text;
+                      });
+                      _saveApiKeys();
                     });
                     Navigator.of(dialogContext).pop(); // Fermer le dialogue après sauvegarde
                   },
