@@ -22,4 +22,15 @@ class ApiKey {
   set key(String value) {
     _key = value;
   }
+
+  static ApiKey? getFromIdLib(String libId, List<ApiKey> apiKeys) {
+    for(var apiKey in apiKeys){
+      if(apiKey.libId == libId){
+        return apiKey;
+      }
+    }
+
+    return null;
+  }
+
 }

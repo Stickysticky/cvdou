@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cvdou/objects/imageResult.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
-import 'package:cvdou/constants/webSitesFilter.dart';
 
 class GoogleSearchService {
   final String _apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';

@@ -1,12 +1,13 @@
-// lib/services/vision_service.dart
 import 'dart:convert';
 import 'dart:io';
-import 'package:cvdou/objects/imageResult.dart';
 import 'package:http/http.dart' as http;
-import 'package:cvdou/objects/imageResult.dart';
 
 class VisionService {
-  final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
+  //final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
+
+  final String _apiKey;
+
+  VisionService(this._apiKey);
 
   /*
   Future<Map<String, dynamic>?> searchImage(File imageFile) async {
@@ -57,7 +58,7 @@ class VisionService {
 
 
   Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
-    final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
+    final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$_apiKey');
 
     final bytes = await imageFile.readAsBytes();
     final base64Image = base64Encode(bytes);

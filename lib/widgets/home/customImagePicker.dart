@@ -27,7 +27,7 @@ class CustomImagePicker extends StatefulWidget {
 class _CustomImagePickerState extends State<CustomImagePicker> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
-  final VisionService _visionService = VisionService();
+  late VisionService _visionService;
   late List<ImageResult> _imageResults;
   final GoogleSearchService _googleSearchService = GoogleSearchService();
   bool _isLoading = false;
@@ -40,6 +40,10 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     super.initState();
     _imageResults = widget.imageResults;
     _loadApiKeys();
+
+    ApiKey? apiKey = ApiKey.getFromIdLib('', _apiKeys);
+    String key = apiKey != null ? apiKey.key : '';
+    _visionService = VisionService(key);
   }
 
   // Fonction pour ouvrir la caméra
@@ -163,7 +167,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             return AlertDialog(
                 title: Text("Informations utilisation"),
                 content:
-                Text("Cette application utilise l'api google vision ai et google custom search. Veuillez ajouter vos clés API dans les paramètres")
+                Text("Cette application utilise l'api Google Vision ai et Google Custom Search. Veuillez ajouter vos clés API dans les paramètres")
             );
           }
       );
