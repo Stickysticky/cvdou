@@ -29,7 +29,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   File? _image;
   late VisionService _visionService;
   late List<ImageResult> _imageResults;
-  final GoogleSearchService _googleSearchService = GoogleSearchService();
+  late GoogleSearchService _googleSearchService;
   bool _isLoading = false;
   List<WebsiteFilter> _selectedFilters = [];
   List<ApiKey> _apiKeys = [];
@@ -45,9 +45,16 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   Future<void> _initializeApiKeys() async {
     await _loadApiKeys();
 
-    ApiKey? apiKey = ApiKey.getFromIdLib('googleVisionAi', _apiKeys);
-    String key = apiKey != null ? apiKey.key : '';
-    _visionService = VisionService(key);
+    ApiKey? apiKeyVisionAi = ApiKey.getFromIdLib('googleVisionAi', _apiKeys);
+    _visionService = VisionService(apiKeyVisionAi != null ? apiKeyVisionAi.key : '');
+
+    ApiKey? apiKeyCS= ApiKey.getFromIdLib('googleCustomSearch', _apiKeys);
+    ApiKey? apiKeyCx= ApiKey.getFromIdLib('googleCx', _apiKeys);
+
+    _googleSearchService = GoogleSearchService(
+        apiKeyCS != null ? apiKeyCS.key : '',
+        apiKeyCx != null ? apiKeyCx.key : ''
+    );
   }
 
   // Fonction pour ouvrir la caméra

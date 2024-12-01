@@ -4,8 +4,13 @@ import 'package:cvdou/objects/imageResult.dart';
 import 'package:cvdou/objects/websiteFilter.dart';
 
 class GoogleSearchService {
-  final String _apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
-  final String _cx = '303898d572aed4acc';
+  //final String _apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
+  //final String _cx = '303898d572aed4acc';
+
+  final String _apiKey;
+  final String _cx;
+
+  GoogleSearchService(this._apiKey, this._cx);
 
   Future<List<ImageResult>> searchRelatedImages(Map<String, dynamic> searchResult, List<WebsiteFilter> selectedFilters) async {
     print(selectedFilters);
