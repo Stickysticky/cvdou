@@ -22,8 +22,26 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "addFilter": MessageLookupByLibrary.simpleMessage("Add a filter"),
+        "apiKeys": MessageLookupByLibrary.simpleMessage("API keys"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cannotOpenLink":
+            MessageLookupByLibrary.simpleMessage("Cannot open the link"),
         "chooseGallery":
             MessageLookupByLibrary.simpleMessage("Choose from gallery"),
-        "takePicture": MessageLookupByLibrary.simpleMessage("Take a picture")
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "filtering": MessageLookupByLibrary.simpleMessage("Filtering"),
+        "modifyFilter": MessageLookupByLibrary.simpleMessage("Modify filter"),
+        "modifyKey": MessageLookupByLibrary.simpleMessage("Modifiy key"),
+        "nameFilter": MessageLookupByLibrary.simpleMessage("Filters name"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "takePicture": MessageLookupByLibrary.simpleMessage("Take a picture"),
+        "urlFilter": MessageLookupByLibrary.simpleMessage("Filters url"),
+        "usageInformation":
+            MessageLookupByLibrary.simpleMessage("Use information"),
+        "usageInformationMessage": MessageLookupByLibrary.simpleMessage(
+            "This app uses Google Vision ai API and Google Custom Search. Please add your API keys in settings")
       };
 }

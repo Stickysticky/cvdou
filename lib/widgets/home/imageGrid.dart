@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cvdou/objects/imageResult.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cvdou/generated/l10n.dart';
 
 class ImageGridWidget extends StatelessWidget {
   final List<ImageResult> images;
@@ -108,7 +110,7 @@ class ImageGridWidget extends StatelessWidget {
       // Affiche un message d'erreur si l'URL ne peut pas être ouverte
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Impossible d\'ouvrir le lien'),
+          content: Text(S.of(context).cannotOpenLink),
         ),
       );
     }

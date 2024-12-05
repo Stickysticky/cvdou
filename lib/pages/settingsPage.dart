@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cvdou/constants/apiKeys.dart';
 import 'package:cvdou/objects/apiKey.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cvdou/generated/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -17,6 +19,13 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   List<WebsiteFilter> _websiteFilters = [];
   List<ApiKey> _apiKeys = basicApiKeys;
+  Locale _locale = Locale('fr');
+
+  void changeLanguage(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   void initState() {
@@ -85,8 +94,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
@@ -100,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Filtrage",
+                    S.of(context).filtering,
                     style: TextStyle(fontSize: 30),
                   ),
                   FloatingActionButton(
@@ -138,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SizedBox(height: 30),
               Text(
-                "Clées API",
+                S.of(context).apiKeys,
                 style: TextStyle(fontSize: 30),
               ),
               SizedBox(height: 10),
@@ -186,21 +195,21 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text("Ajouter un filtre"),
+          title: Text(S.of(context).addFilter),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: libController,
                 decoration: InputDecoration(
-                  labelText: "Nom du filtre",
+                  labelText: S.of(context).nameFilter,
                 ),
               ),
               SizedBox(height: 10),
               TextField(
                 controller: urlController,
                 decoration: InputDecoration(
-                  labelText: "URL du filtre",
+                  labelText: S.of(context).urlFilter,
                 ),
               ),
             ],
@@ -208,9 +217,9 @@ class _SettingsPageState extends State<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Fermer le dialogue sans ajouter
+                Navigator.of(dialogContext).pop();
               },
-              child: Text("Annuler"),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () {
@@ -222,7 +231,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
                 Navigator.of(dialogContext).pop(); // Fermer le dialogue après ajout
               },
-              child: Text("Ajouter"),
+              child: Text(S.of(context).add),
             ),
           ],
         );
@@ -239,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> {
         context: context,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: Text("Modifier la clée"),
+            title: Text(S.of(context).modifyKey),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -256,7 +265,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPressed: () {
                   Navigator.of(dialogContext).pop(); // Fermer le dialogue sans sauvegarde
                 },
-                child: Text("Annuler"),
+                child: Text(S.of(context).cancel),
                 ),
                 TextButton(
                   onPressed: () {
@@ -268,7 +277,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     });
                     Navigator.of(dialogContext).pop(); // Fermer le dialogue après sauvegarde
                   },
-                  child: Text("Sauvegarder"),
+                  child: Text(S.of(context).save),
                 ),
               ]
           );
@@ -289,21 +298,21 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text("Modifier le filtre"),
+          title: Text(S.of(context).modifyFilter),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: libController,
                 decoration: InputDecoration(
-                  labelText: "Nom du filtre",
+                  labelText: S.of(context).nameFilter,
                 ),
               ),
               SizedBox(height: 10),
               TextField(
                 controller: urlController,
                 decoration: InputDecoration(
-                  labelText: "URL du filtre",
+                  labelText: S.of(context).urlFilter,
                 ),
               ),
             ],
@@ -313,7 +322,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onPressed: () {
                 Navigator.of(dialogContext).pop(); // Fermer le dialogue sans sauvegarde
               },
-              child: Text("Annuler"),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () {
@@ -324,7 +333,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
                 Navigator.of(dialogContext).pop(); // Fermer le dialogue après sauvegarde
               },
-              child: Text("Sauvegarder"),
+              child: Text(S.of(context).save),
             ),
             TextButton(
               onPressed: () {
@@ -335,7 +344,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.of(dialogContext).pop(); // Fermer le dialogue après suppression
               },
               child: Text(
-                "Supprimer",
+                S.of(context).delete,
                 style: TextStyle(color: Colors.red), // Couleur rouge pour attirer l'attention
               ),
             ),

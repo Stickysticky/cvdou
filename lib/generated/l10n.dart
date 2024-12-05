@@ -69,6 +69,156 @@ class S {
       args: [],
     );
   }
+
+  /// `Filtering`
+  String get filtering {
+    return Intl.message(
+      'Filtering',
+      name: 'filtering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `API keys`
+  String get apiKeys {
+    return Intl.message(
+      'API keys',
+      name: 'apiKeys',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a filter`
+  String get addFilter {
+    return Intl.message(
+      'Add a filter',
+      name: 'addFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters name`
+  String get nameFilter {
+    return Intl.message(
+      'Filters name',
+      name: 'nameFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters url`
+  String get urlFilter {
+    return Intl.message(
+      'Filters url',
+      name: 'urlFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifiy key`
+  String get modifyKey {
+    return Intl.message(
+      'Modifiy key',
+      name: 'modifyKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify filter`
+  String get modifyFilter {
+    return Intl.message(
+      'Modify filter',
+      name: 'modifyFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use information`
+  String get usageInformation {
+    return Intl.message(
+      'Use information',
+      name: 'usageInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This app uses Google Vision ai API and Google Custom Search. Please add your API keys in settings`
+  String get usageInformationMessage {
+    return Intl.message(
+      'This app uses Google Vision ai API and Google Custom Search. Please add your API keys in settings',
+      name: 'usageInformationMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cannot open the link`
+  String get cannotOpenLink {
+    return Intl.message(
+      'Cannot open the link',
+      name: 'cannotOpenLink',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

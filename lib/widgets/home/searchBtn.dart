@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cvdou/generated/l10n.dart';
 
 class SearchBtn extends StatefulWidget {
   final VoidCallback onPressed;
@@ -11,6 +13,13 @@ class SearchBtn extends StatefulWidget {
 
 class _SearchBtnState extends State<SearchBtn> {
   bool _isLoading = false;
+  Locale _locale = Locale('fr');
+
+  void changeLanguage(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +44,7 @@ class _SearchBtnState extends State<SearchBtn> {
       child: _isLoading
           ? CircularProgressIndicator(color: Colors.white)
           : Text(
-        "Rechercher",
+        S.of(context).search,
         style: TextStyle(color: Colors.white),
       ),
     );

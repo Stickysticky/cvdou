@@ -178,9 +178,9 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           builder: (BuildContext dialogContext)
           {
             return AlertDialog(
-                title: Text("Informations utilisation"),
+                title: Text(S.of(context).usageInformation),
                 content:
-                Text("Cette application utilise l'api Google Vision ai et Google Custom Search. Veuillez ajouter vos clés API dans les paramètres")
+                Text(S.of(context).usageInformationMessage)
             );
           }
       );

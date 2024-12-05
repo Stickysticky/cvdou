@@ -11,7 +11,6 @@ class WebsiteFilter {
   String get lib => _lib;
   String get url => _url;
 
-  // Redéfinition de la méthode toString
   @override
   String toString() {
     return _lib;

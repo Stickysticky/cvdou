@@ -1,5 +1,20 @@
 {
   "@@locale": "fr",
   "takePicture": "Prendre une photo",
-  "chooseGallery": "Choisir depuis la galerie"
+  "chooseGallery": "Choisir depuis la galerie",
+  "filtering": "Filtrage",
+  "apiKeys": "Clées API",
+  "addFilter": "Ajouter un filtre",
+  "nameFilter": "Nom du filtre",
+  "urlFilter": "Url du filtre",
+  "cancel": "Annuler",
+  "add": "Ajouter",
+  "modifyKey": "Modifier la clée",
+  "save": "Sauvegarder",
+  "modifyFilter": "Modifier le filtre",
+  "delete": "Supprimer",
+  "search": "Rechercher",
+  "usageInformation": "Informations utilisation",
+  "usageInformationMessage": "Cette application utilise l'api Google Vision ai et Google Custom Search. Veuillez ajouter vos clés API dans les paramètres",
+  "cannotOpenLink": "Impossible d'ouvrir le lien"
 }

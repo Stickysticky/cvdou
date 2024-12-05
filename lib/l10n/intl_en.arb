@@ -1,5 +1,20 @@
 {
   "@@locale": "en",
   "takePicture": "Take a picture",
-  "chooseGallery": "Choose from gallery"
+  "chooseGallery": "Choose from gallery",
+  "filtering": "Filtering",
+  "apiKeys": "API keys",
+  "addFilter": "Add a filter",
+  "nameFilter": "Filters name",
+  "urlFilter": "Filters url",
+  "cancel": "Cancel",
+  "add": "Add",
+  "modifyKey": "Modifiy key",
+  "save": "Save",
+  "modifyFilter": "Modify filter",
+  "delete": "Delete",
+  "search": "Search",
+  "usageInformation": "Use information",
+  "usageInformationMessage": "This app uses Google Vision ai API and Google Custom Search. Please add your API keys in settings",
+  "cannotOpenLink": "Cannot open the link"
 }

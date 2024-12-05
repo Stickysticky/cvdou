@@ -25,14 +25,14 @@ void main() {
     ],
     localeResolutionCallback: (locale, supportedLocales) {
       if (locale == null) {
-        return Locale('fr');  // Par défaut "fr"
+        return Locale('fr');
       }
       for (var supportedLocale in supportedLocales) {
         if (supportedLocale.languageCode == locale.languageCode) {
           return supportedLocale;
         }
       }
-      return Locale('fr');  // Par défaut "fr"
+      return Locale('fr');
     },
   ));
 }
