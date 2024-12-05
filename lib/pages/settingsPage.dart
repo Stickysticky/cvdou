@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
       });
     } else {
       setState(() {
-        _websiteFilters = basicWebsiteFilters; // Utiliser la liste par défaut
+        _websiteFilters = basicWebsiteFilters;
       });
     }
   }

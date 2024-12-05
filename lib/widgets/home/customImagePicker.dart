@@ -12,6 +12,8 @@ import 'package:cvdou/objects/apiKey.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cvdou/constants/apiKeys.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cvdou/generated/l10n.dart';
 
 
 class CustomImagePicker extends StatefulWidget {
@@ -84,11 +86,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 70),
         ElevatedButton(
           onPressed: _pickImageFromCamera,
-          child: Text("Prendre une photo"),
+          child: Text(S.of(context).takePicture),
         ),
         ElevatedButton(
           onPressed: _pickImageFromGallery,
-          child: Text("Choisir depuis la galerie"),
+          child: Text(S.of(context).chooseGallery),
         ),
       ],
     );
@@ -102,11 +104,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: _pickImageFromCamera,
-          child: Text("Prendre une photo"),
+          child: Text(S.of(context).takePicture),
         ),
         ElevatedButton(
           onPressed: _pickImageFromGallery,
-          child: Text("Choisir depuis la galerie"),
+          child: Text(S.of(context).chooseGallery),
         ),
         FilterSearchBtn(
           onFiltersSelected: (filters){
