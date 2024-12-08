@@ -48,15 +48,20 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     await _loadApiKeys();
 
     ApiKey? apiKeyVisionAi = ApiKey.getFromIdLib('googleVisionAi', _apiKeys);
-    _visionService = VisionService(apiKeyVisionAi != null ? apiKeyVisionAi.key : '');
+    setState(() {
+      _visionService = VisionService(apiKeyVisionAi != null ? apiKeyVisionAi.key : '');
+    });
 
     ApiKey? apiKeyCS= ApiKey.getFromIdLib('googleCustomSearch', _apiKeys);
     ApiKey? apiKeyCx= ApiKey.getFromIdLib('googleCx', _apiKeys);
 
-    _googleSearchService = GoogleSearchService(
-        apiKeyCS != null ? apiKeyCS.key : '',
-        apiKeyCx != null ? apiKeyCx.key : ''
-    );
+    setState(() {
+      _googleSearchService = GoogleSearchService(
+          apiKeyCS != null ? apiKeyCS.key : '',
+          apiKeyCx != null ? apiKeyCx.key : ''
+      );
+    });
+
   }
 
   // Fonction pour ouvrir la caméra
@@ -131,6 +136,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             });
 
             try {
+              await _initializeApiKeys();
               final analysis = await _visionService.analyseImage(_image!);
 
               List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!, _selectedFilters);

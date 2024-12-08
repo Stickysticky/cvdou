@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cvdou/constants/apiKeys.dart';
 import 'package:cvdou/objects/apiKey.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cvdou/generated/l10n.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -150,13 +149,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 S.of(context).apiKeys,
                 style: TextStyle(fontSize: 30),
               ),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Text(
                   S.of(context).updateKeysInfo,
                   style: TextStyle(fontSize: 15),
                 ),
-              ),
+              ),*/
               SizedBox(height: 10),
               // Liste des clés API
               ListView.builder(
