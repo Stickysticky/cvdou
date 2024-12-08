@@ -31,15 +31,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "chooseGallery":
             MessageLookupByLibrary.simpleMessage("Choisir depuis la galerie"),
         "delete": MessageLookupByLibrary.simpleMessage("Supprimer"),
+        "error": MessageLookupByLibrary.simpleMessage("Erreur"),
+        "errorUserInfo": MessageLookupByLibrary.simpleMessage(
+            "Une erreur a eu lieu lors de la recherche. Veuillez vérifier vos clés API et votre connexion"),
         "filtering": MessageLookupByLibrary.simpleMessage("Filtrage"),
         "modifyFilter":
             MessageLookupByLibrary.simpleMessage("Modifier le filtre"),
         "modifyKey": MessageLookupByLibrary.simpleMessage("Modifier la clée"),
         "nameFilter": MessageLookupByLibrary.simpleMessage("Nom du filtre"),
+        "noResultInfo": MessageLookupByLibrary.simpleMessage(
+            "Aucun résultat n\'a été trouvé."),
         "save": MessageLookupByLibrary.simpleMessage("Sauvegarder"),
         "search": MessageLookupByLibrary.simpleMessage("Rechercher"),
         "takePicture":
             MessageLookupByLibrary.simpleMessage("Prendre une photo"),
+        "updateKeysInfo": MessageLookupByLibrary.simpleMessage(
+            "Veuillez redémarrer l\'application après la modification de ces informations"),
         "urlFilter": MessageLookupByLibrary.simpleMessage("Url du filtre"),
         "usageInformation":
             MessageLookupByLibrary.simpleMessage("Informations utilisation"),

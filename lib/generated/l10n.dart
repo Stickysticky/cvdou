@@ -219,6 +219,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error occurred during the search. Please check your API keys and connection`
+  String get errorUserInfo {
+    return Intl.message(
+      'An error occurred during the search. Please check your API keys and connection',
+      name: 'errorUserInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No results found.`
+  String get noResultInfo {
+    return Intl.message(
+      'No results found.',
+      name: 'noResultInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please restart the application after changing this information`
+  String get updateKeysInfo {
+    return Intl.message(
+      'Please restart the application after changing this information',
+      name: 'updateKeysInfo',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

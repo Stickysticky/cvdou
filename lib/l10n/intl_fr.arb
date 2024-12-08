@@ -16,5 +16,9 @@
   "search": "Rechercher",
   "usageInformation": "Informations utilisation",
   "usageInformationMessage": "Cette application utilise l'api Google Vision ai et Google Custom Search. Veuillez ajouter vos clés API dans les paramètres",
-  "cannotOpenLink": "Impossible d'ouvrir le lien"
+  "cannotOpenLink": "Impossible d'ouvrir le lien",
+  "error": "Erreur",
+  "errorUserInfo":"Une erreur a eu lieu lors de la recherche. Veuillez vérifier vos clés API et votre connexion",
+  "noResultInfo":"Aucun résultat n'a été trouvé.",
+  "updateKeysInfo": "Veuillez redémarrer l'application après la modification de ces informations"
 }

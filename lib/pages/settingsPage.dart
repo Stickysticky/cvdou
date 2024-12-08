@@ -150,6 +150,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 S.of(context).apiKeys,
                 style: TextStyle(fontSize: 30),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Text(
+                  S.of(context).updateKeysInfo,
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
               SizedBox(height: 10),
               // Liste des clés API
               ListView.builder(

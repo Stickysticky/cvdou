@@ -137,8 +137,36 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
               setState(() {
                 _imageResults = imageResults;
               });
+
+              if (_imageResults.isEmpty) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(S.of(context).error),
+                      content: Text(S.of(context).noResultInfo),
+                    );
+                  },
+                );
+                return; // Arrête l'exécution de onPressed
+              }
+
             } catch (e) {
               print('Erreur : $e');
+
+              if (_imageResults.isEmpty) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text( S.of(context).error),
+                      content: Text(S.of(context).errorUserInfo),
+                    );
+                  },
+                );
+                return; // Arrête l'exécution de onPressed
+              }
+
             } finally {
               setState(() {
                 _isLoading = false;
