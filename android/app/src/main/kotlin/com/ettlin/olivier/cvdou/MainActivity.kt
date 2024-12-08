@@ -1,4 +1,4 @@
-package com.example.cvdou
+package com.ettlin.olivier.cvdou
 
 import io.flutter.embedding.android.FlutterActivity
 
