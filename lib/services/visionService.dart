@@ -3,59 +3,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class VisionService {
-  //final String apiKey = 'AIzaSyCy2x2K-4dQJ5iPOq4EK-pib4GSbltHVxc';
-
   final String _apiKey;
 
   VisionService(this._apiKey);
-
-  /*
-  Future<Map<String, dynamic>?> searchImage(File imageFile) async {
-    final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$apiKey');
-
-    final bytes = await imageFile.readAsBytes();
-    final base64Image = base64Encode(bytes);
-
-    final requestBody = jsonEncode({
-      "requests": [
-        {
-          "image": {
-            "content": base64Image,
-          },
-          "features": [
-            { "type": "LABEL_DETECTION", "maxResults": 10 },
-            { "type": "WEB_DETECTION", "maxResults": 5 },
-            { "type": "LANDMARK_DETECTION", "maxResults": 10 },
-            { "type": "OBJECT_LOCALIZATION" },
-            { "type": "LOGO_DETECTION", "maxResults": 10 }
-          ],
-          "imageContext": {
-            "languageHints": ["fr"],
-          }
-        }
-      ]
-    });
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: requestBody,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data;
-      } else {
-        print('Erreur : ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Erreur de requête : $e');
-      return null;
-    }
-  }*/
-
 
   Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
     final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$_apiKey');
