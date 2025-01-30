@@ -1,7 +1,7 @@
 # CVDOU – Custom Image Search App
 
 ## Overview  
-CVDOU is my first Flutter application, designed to perform **image-based searches** while allowing users to **filter the websites** where the search is conducted. This ensures more relevant and targeted results.  
+CVDOU is a flutter application, designed to perform **image-based searches** while allowing users to **filter the websites** where the search is conducted. This ensures more relevant and targeted results.  
 
 ## Features  
 - **Image-Based Search**: Upload an image to initiate a search.  
