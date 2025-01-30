@@ -1,16 +1,21 @@
-# cvdou
+# CVDOU – Custom Image Search App
 
-A new Flutter project.
+## Overview  
+CVDOU is my first Flutter application, designed to perform **image-based searches** while allowing users to **filter the websites** where the search is conducted. This ensures more relevant and targeted results.  
 
-## Getting Started
+## Features  
+- **Image-Based Search**: Upload an image to initiate a search.  
+- **Custom Website Filters**: Users can add, remove, or modify the list of websites to refine search results.  
+- **Google Vision AI & Google Custom Search**: The app leverages **Google Vision AI** for image analysis and **Google Custom Search** to retrieve results.  
 
-This project is a starting point for a Flutter application.
+## Technologies Used  
+- **Flutter** (Dart)  
+- **Google Vision AI**  
+- **Google Custom Search API**  
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![1734598966256](https://github.com/user-attachments/assets/0c08ad0c-b681-4edb-8dac-3db9e1962708)
+![1734598966079](https://github.com/user-attachments/assets/50811b86-43e8-439b-9307-829b3ed00276)
+![1734598965247](https://github.com/user-attachments/assets/58f34cc2-724c-4a03-aaca-6edd9f23cbce)
+![1734598965128](https://github.com/user-attachments/assets/ac3770f3-da86-4ba0-af16-613a4c5f8239)
+![1734598964650](https://github.com/user-attachments/assets/21c8a649-d1c1-4de5-ba34-dc592fe6f1d4)
