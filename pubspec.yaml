@@ -43,6 +43,8 @@ dependencies:
   flutter_localization: ^0.3.1
   intl_utils: ^2.8.7
   intl: any
+  mockito: ^5.4.5
+  build_runner: ^2.4.15
 
 flutter_icons:
   android: true
