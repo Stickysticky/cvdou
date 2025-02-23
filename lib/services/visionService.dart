@@ -4,8 +4,11 @@ import 'package:http/http.dart' as http;
 
 class VisionService {
   final String _apiKey;
+  final http.Client _httpClient;
 
-  VisionService(this._apiKey);
+  // Injecter http.Client via le constructeur
+  VisionService(this._apiKey, [http.Client? httpClient])
+      : _httpClient = httpClient ?? http.Client();
 
   Future<Map<String, dynamic>?> analyseImage(File imageFile) async {
     final url = Uri.parse('https://vision.googleapis.com/v1/images:annotate?key=$_apiKey');
@@ -29,12 +32,11 @@ class VisionService {
       ]
     });
     try {
-      final response = await http.post(
+      final response = await _httpClient.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: requestBody,
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return data;
