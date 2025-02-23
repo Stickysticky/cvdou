@@ -22,15 +22,15 @@ class CustomImagePicker extends StatefulWidget {
   CustomImagePicker({Key? key, required this.imageResults}) : super(key: key);
 
   @override
-  _CustomImagePickerState createState() =>
-      _CustomImagePickerState();
+  CustomImagePickerState createState() =>
+      CustomImagePickerState();
 }
 
-class _CustomImagePickerState extends State<CustomImagePicker> {
+class CustomImagePickerState extends State<CustomImagePicker> {
   final ImagePicker _picker = ImagePicker();
-  File? _image;
+  File? image;
   late VisionService _visionService;
-  late List<ImageResult> _imageResults;
+  late List<ImageResult> imageResults;
   late GoogleSearchService _googleSearchService;
   bool _isLoading = false;
   List<WebsiteFilter> _selectedFilters = [];
@@ -40,7 +40,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   @override
   void initState() {
     super.initState();
-    _imageResults = widget.imageResults;
+    imageResults = widget.imageResults;
     _initializeApiKeys();
   }
 
@@ -69,7 +69,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        image = File(pickedFile.path);
       });
     }
   }
@@ -79,7 +79,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        image = File(pickedFile.path);
       });
     }
   }
@@ -105,7 +105,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Image.file(_image!),
+        Image.file(image!),
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: _pickImageFromCamera,
@@ -131,20 +131,20 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             }
 
             setState(() {
-              _imageResults.clear();
+              imageResults.clear();
               _isLoading = true;
             });
 
             try {
               await _initializeApiKeys();
-              final analysis = await _visionService.analyseImage(_image!);
+              final analysis = await _visionService.analyseImage(image!);
 
               List<ImageResult> imageResults = await _googleSearchService.searchRelatedImages(analysis!, _selectedFilters);
               setState(() {
-                _imageResults = imageResults;
+                imageResults = imageResults;
               });
 
-              if (_imageResults.isEmpty) {
+              if (imageResults.isEmpty) {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -160,7 +160,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             } catch (e) {
               print('Erreur : $e');
 
-              if (_imageResults.isEmpty) {
+              if (imageResults.isEmpty) {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -183,8 +183,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         SizedBox(height: 20),
         _isLoading
             ? CircularProgressIndicator()
-            : _imageResults.isNotEmpty
-            ? ImageGridWidget(images: _imageResults)
+            : imageResults.isNotEmpty
+            ? ImageGridWidget(images: imageResults)
             : Container(),
       ],
     );
@@ -192,7 +192,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return _image != null ? selectedImage() : unselectedImage();
+    return image != null ? selectedImage() : unselectedImage();
   }
 
 
